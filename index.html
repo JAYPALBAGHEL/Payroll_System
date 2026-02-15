@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Payroll Software System</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+        }
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        .sidebar-collapsed {
+            width: 60px;
+        }
+        .sidebar-expanded {
+            width: 250px;
+        }
+        .main-content {
+            transition: all 0.3s ease;
+        }
+        .main-content-collapsed {
+            margin-left: 60px;
+        }
+        .main-content-expanded {
+            margin-left: 250px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div id="sidebar" class="sidebar sidebar-expanded bg-gray-800 text-white flex flex-col">
+            <div class="p-4 flex items-center justify-between">
+                <h1 class="text-xl font-bold">Payroll System</h1>
+                <button id="toggleSidebar" class="text-white">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <nav class="flex-1 p-2">
+                <a href="#" class="dashboard-link flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded">
+                    <i class="fas fa-tachometer-alt w-6"></i>
+                    <span class="ml-2">Dashboard</span>
+                </a>
+                <a href="#" class="employee-link flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded">
+                    <i class="fas fa-users w-6"></i>
+                    <span class="ml-2">Employee Management</span>
+                </a>
+                <a href="#" class="salary-link flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded">
+                    <i class="fas fa-money-bill w-6"></i>
+                    <span class="ml-2">Salary Structure</span>
+                </a>
+                <a href="#" class="payroll-link flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded">
+                    <i class="fas fa-calculator w-6"></i>
+                    <span class="ml-2">Payroll Processing</span>
+                </a>
+                <a href="#" class="reports-link flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded">
+                    <i class="fas fa-file-alt w-6"></i>
+                    <span class="ml-2">Reports</span>
+                </a>
+                <a href="#" class="admin-link flex items-center p-2 text-gray-300 hover:bg-gray-700 rounded">
+                    <i class="fas fa-cog w-6"></i>
+                    <span class="ml-2">Admin</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div id="mainContent" class="main-content main-content-expanded flex-1 p-6">
+            <!-- Dashboard -->
+            <div id="dashboard" class="dashboard-section">
+                <h2 class="text-2xl font-bold mb-4">Dashboard</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-4 rounded shadow">
+                        <h3 class="text-lg font-semibold">Total Employees</h3>
+                        <p id="totalEmployees" class="text-2xl">0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded shadow">
+                        <h3 class="text-lg font-semibold">Monthly Payroll</h3>
+                        <p id="monthlyPayroll" class="text-2xl">₹0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded shadow">
+                        <h3 class="text-lg font-semibold">Annual CTC</h3>
+                        <p id="annualCTC" class="text-2xl">₹0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded shadow">
+                        <h3 class="text-lg font-semibold">Pending Tasks</h3>
+                        <p id="pendingTasks" class="text-2xl">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employee Management -->
+            <div id="employeeManagement" class="employee-section hidden">
+                <h2 class="text-2xl font-bold mb-4">Employee Management</h2>
+                <div class="bg-white p-4 rounded shadow">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold">Employee List</h3>
+                        <button id="addEmployeeBtn" class="bg-blue-500 text-white px-4 py-2 rounded">Add Employee</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table id="employeeTable" class="min-w-full bg-white">
+                            <thead>
+                                <tr>
+                                    <th class="py-2 px-4 border-b">Employee ID</th>
+                                    <th class="py-2 px-4 border-b">Name</th>
+                                    <th class="py-2 px-4 border-b">Designation</th>
+                                    <th class="py-2 px-4 border-b">Department</th>
+                                    <th class="py-2 px-4 border-b">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="employeeTableBody">
+                                <!-- Employee data will be added here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Salary Structure -->
+            <div id="salaryStructure" class="salary-section hidden">
+                <h2 class="text-2xl font-bold mb-4">Salary Structure Configuration</h2>
+                <div class="bg-white p-4 rounded shadow">
+                    <form id="salaryForm">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Employee</label>
+                                <select id="employeeSelect" class="mt-1 block w-full p-2 border rounded">
+                                    <option value="">Select Employee</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Basic Salary</label>
+                                <input type="number" id="basicSalary" class="mt-1 block w-full p-2 border rounded">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">HRA</label>
+                                <input type="number" id="hra" class="mt-1 block w-full p-2 border rounded">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Special Allowance</label>
+                                <input type="number" id="specialAllowance" class="mt-1 block w-full p-2 border rounded">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Conveyance</label>
+                                <input type="number" id="conveyance" class="mt-1 block w-full p-2 border rounded">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Medical Allowance</label>
+                                <input type="number" id="medicalAllowance" class="mt-1 block w-full p-2 border rounded">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Bonus / Variable Pay</label>
+                                <input type="number" id="bonus" class="mt-1 block w-full p-2 border rounded">
+                            </div>
+                        </div>
+                        <button type="submit" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">Save Salary Structure</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Payroll Processing -->
+            <div id="payrollProcessing" class="payroll-section hidden">
+                <h2 class="text-2xl font-bold mb-4">Payroll Processing</h2>
+                <div class="bg-white p-4 rounded shadow">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold">Run Payroll</h3>
+                        <button id="runPayrollBtn" class="bg-blue-500 text-white px-4 py-2 rounded">Run Payroll</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Month</label>
+                            <input type="month" id="payrollMonth" class="mt-1 block w-full p-2 border rounded">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Year</label>
+                            <input type="number" id="payrollYear" class="mt-1 block w-full p-2 border rounded">
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <h4 class="font-semibold">Payroll Summary</h4>
+                        <div class="overflow-x-auto">
+                            <table id="payrollSummaryTable" class="min-w-full bg-white">
+                                <thead>
+                                    <tr>
+                                        <th class="py-2 px-4 border-b">Employee</th>
+                                        <th class="py-2 px-4 border-b">Gross Salary</th>
+                                        <th class="py-2 px-4 border-b">Deductions</th>
+                                        <th class="py-2 px-4 border-b">Net Salary</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="payrollSummaryBody">
+                                    <!-- Payroll data will be added here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports -->
+            <div id="reports" class="reports-section hidden">
+                <h2 class="text-2xl font-bold mb-4">Reports</h2>
+                <div class="bg-white p-4 rounded shadow">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <h3 class="text-lg font-semibold">Salary Slip</h3>
+                            <button id="generateSalarySlipBtn" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded">Generate Salary Slip</button>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold">CTC Breakup</h3>
+                            <button id="generateCTCBreakupBtn" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded">Generate CTC Breakup</button>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold">Annual Salary Summary</h3>
+                            <button id="generateAnnualSummaryBtn" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded">Generate Annual Summary</button>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold">Statutory Reports</h3>
+                            <button id="generateStatutoryReportsBtn" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded">Generate Statutory Reports</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin -->
+            <div id="admin" class="admin-section hidden">
+                <h2 class="text-2xl font-bold mb-4">Admin Settings</h2>
+                <div class="bg-white p-4 rounded shadow">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <h3 class="text-lg font-semibold">Company Details</h3>
+                            <form id="companyForm">
+                                <div class="mt-2">
+                                    <label class="block text-sm font-medium text-gray-700">Company Name</label>
+                                    <input type="text" id="companyName" class="mt-1 block w-full p-2 border rounded">
+                                </div>
+                                <div class="mt-2">
+                                    <label class="block text-sm font-medium text-gray-700">CIN</label>
+                                    <input type="text" id="companyCIN" class="mt-1 block w-full p-2 border rounded">
+                                </div>
+                                <div class="mt-2">
+                                    <label class="block text-sm font-medium text-gray-700">GSTIN</label>
+                                    <input type="text" id="companyGSTIN" class="mt-1 block w-full p-2 border rounded">
+                                </div>
+                                <button type="submit" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">Save Company Details</button>
+                            </form>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold">Tax Regime</h3>
+                            <form id="taxRegimeForm">
+                                <div class="mt-2">
+                                    <label class="block text-sm font-medium text-gray-700">Select Tax Regime</label>
+                                    <select id="taxRegime" class="mt-1 block w-full p-2 border rounded">
+                                        <option value="old">Old Tax Regime</option>
+                                        <option value="new">New Tax Regime</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">Save Tax Regime</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employee Modal -->
+    <div id="employeeModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden">
+        <div class="flex items-center justify-center h-screen">
+            <div class="bg-white p-6 rounded shadow-lg w-full max-w-md">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold">Add Employee</h2>
+                    <button id="closeEmployeeModal" class="text-gray-500">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form id="employeeForm">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Employee ID</label>
+                            <input type="text" id="employeeId" class="mt-1 block w-full p-2 border rounded">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Name</label>
+                            <input type="text" id="employeeName" class="mt-1 block w-full p-2 border rounded">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Designation</label>
+                            <input type="text" id="designation" class="mt-1 block w-full p-2 border rounded">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Department</label>
+                            <input type="text" id="department" class="mt-1 block w-full p-2 border rounded">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Date of Joining</label>
+                            <input type="date" id="doj" class="mt-1 block w-full p-2 border rounded">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">PAN</label>
+                            <input type="text" id="pan" class="mt-1 block w-full p-2 border rounded">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">UAN</label>
+                            <input type="text" id="uan" class="mt-1 block w-full p-2 border rounded">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">ESIC</label>
+                            <input type="text" id="esic" class="mt-1 block w-full p-2 border rounded">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Bank Account</label>
+                            <input type="text" id="bankAccount" class="mt-1 block w-full p-2 border rounded">
+                        </div>
+                    </div>
+                    <button type="submit" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">Save Employee</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle Sidebar
+        document.getElementById('toggleSidebar').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            sidebar.classList.toggle('sidebar-collapsed');
+            sidebar.classList.toggle('sidebar-expanded');
+            mainContent.classList.toggle('main-content-collapsed');
+            mainContent.classList.toggle('main-content-expanded');
+        });
+
+        // Navigation Links
+        document.querySelector('.dashboard-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            showSection('dashboard');
+        });
+
+        document.querySelector('.employee-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            showSection('employeeManagement');
+        });
+
+        document.querySelector('.salary-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            showSection('salaryStructure');
+        });
+
+        document.querySelector('.payroll-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            showSection('payrollProcessing');
+        });
+
+        document.querySelector('.reports-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            showSection('reports');
+        });
+
+        document.querySelector('.admin-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            showSection('admin');
+        });
+
+        function showSection(sectionId) {
+            const sections = ['dashboard', 'employeeManagement', 'salaryStructure', 'payrollProcessing', 'reports', 'admin'];
+            sections.forEach(section => {
+                document.getElementById(section).classList.add('hidden');
+            });
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+
+        // Employee Modal
+        document.getElementById('addEmployeeBtn').addEventListener('click', function() {
+            document.getElementById('employeeModal').classList.remove('hidden');
+        });
+
+        document.getElementById('closeEmployeeModal').addEventListener('click', function() {
+            document.getElementById('employeeModal').classList.add('hidden');
+        });
+
+        // Employee Form Submission
+        document.getElementById('employeeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const employeeId = document.getElementById('employeeId').value;
+            const employeeName = document.getElementById('employeeName').value;
+            const designation = document.getElementById('designation').value;
+            const department = document.getElementById('department').value;
+
+            const employeeTableBody = document.getElementById('employeeTableBody');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td class="py-2 px-4 border-b">${employeeId}</td>
+                <td class="py-2 px-4 border-b">${employeeName}</td>
+                <td class="py-2 px-4 border-b">${designation}</td>
+                <td class="py-2 px-4 border-b">${department}</td>
+                <td class="py-2 px-4 border-b">
+                    <button class="text-blue-500"><i class="fas fa-edit"></i></button>
+                    <button class="text-red-500"><i class="fas fa-trash"></i></button>
+                </td>
+            `;
+            employeeTableBody.appendChild(newRow);
+
+            // Update employee select dropdown
+            const employeeSelect = document.getElementById('employeeSelect');
+            const option = document.createElement('option');
+            option.value = employeeId;
+            option.textContent = employeeName;
+            employeeSelect.appendChild(option);
+
+            // Close modal
+            document.getElementById('employeeModal').classList.add('hidden');
+            document.getElementById('employeeForm').reset();
+
+            // Update total employees
+            updateTotalEmployees();
+        });
+
+        function updateTotalEmployees() {
+            const totalEmployees = document.querySelectorAll('#employeeTableBody tr').length;
+            document.getElementById('totalEmployees').textContent = totalEmployees;
+        }
+
+        // Salary Form Submission
+        document.getElementById('salaryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Salary structure saved successfully!');
+        });
+
+        // Run Payroll
+        document.getElementById('runPayrollBtn').addEventListener('click', function() {
+            alert('Payroll processed successfully!');
+        });
+
+        // Generate Reports
+        document.getElementById('generateSalarySlipBtn').addEventListener('click', function() {
+            alert('Salary slip generated successfully!');
+        });
+
+        document.getElementById('generateCTCBreakupBtn').addEventListener('click', function() {
+            alert('CTC breakup generated successfully!');
+        });
+
+        document.getElementById('generateAnnualSummaryBtn').addEventListener('click', function() {
+            alert('Annual salary summary generated successfully!');
+        });
+
+        document.getElementById('generateStatutoryReportsBtn').addEventListener('click', function() {
+            alert('Statutory reports generated successfully!');
+        });
+
+        // Company Form Submission
+        document.getElementById('companyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Company details saved successfully!');
+        });
+
+        // Tax Regime Form Submission
+        document.getElementById('taxRegimeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Tax regime saved successfully!');
+        });
+    </script>
+</body>
+</html>
